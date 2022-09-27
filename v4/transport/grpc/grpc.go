@@ -77,9 +77,10 @@ func (t *grpcTransportListener) Accept(fn func(transport.Socket)) error {
 
 		creds := credentials.NewTLS(config)
 		opts = append(opts, grpc.Creds(creds))
-		opts = append(opts, grpc.MaxSendMsgSize(1024*1024*1024))
-		opts = append(opts, grpc.MaxRecvMsgSize(1024*1024*1024))
 	}
+
+	opts = append(opts, grpc.MaxSendMsgSize(1024*1024*1024))
+	opts = append(opts, grpc.MaxRecvMsgSize(1024*1024*1024))
 
 	// new service
 	srv := grpc.NewServer(opts...)
@@ -102,6 +103,8 @@ func (t *grpcTransport) Dial(addr string, opts ...transport.DialOption) (transpo
 
 	options := []grpc.DialOption{
 		grpc.WithTimeout(dopts.Timeout),
+		grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(1024 * 1024 * 1024)),
+		grpc.WithDefaultCallOptions(grpc.MaxCallSendMsgSize(1024 * 1024 * 1024)),
 	}
 
 	if t.opts.Secure || t.opts.TLSConfig != nil {
