@@ -77,6 +77,8 @@ func (t *grpcTransportListener) Accept(fn func(transport.Socket)) error {
 
 		creds := credentials.NewTLS(config)
 		opts = append(opts, grpc.Creds(creds))
+		opts = append(opts, grpc.MaxSendMsgSize(1024*1024*1024))
+		opts = append(opts, grpc.MaxRecvMsgSize(1024*1024*1024))
 	}
 
 	// new service
